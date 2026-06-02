@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Siyanda Nduze — Backend Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0e14;
+    --bg-card: #111722;
+    --bg-card2: #161d2a;
+    --accent: #00e5a0;
+    --accent2: #00b8ff;
+    --text: #e8edf5;
+    --muted: #7a8799;
+    --border: rgba(255,255,255,0.07);
+    --border-accent: rgba(0,229,160,0.25);
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID NOISE BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── GLOW ── */
+  .glow-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glow-orb-1 { width: 500px; height: 500px; background: rgba(0,229,160,0.08); top: -150px; right: -100px; }
+  .glow-orb-2 { width: 400px; height: 400px; background: rgba(0,184,255,0.07); bottom: 200px; left: -100px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 4rem;
+    background: rgba(10,14,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .nav-logo span { color: var(--muted); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-decoration: none;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── WRAPPER ── */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* ── SECTION ── */
+  section { padding: 7rem 0; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 5rem;
+  }
+  .hero-inner { max-width: 800px; }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .hero-name .highlight {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--accent);
+  }
+
+  .hero-title {
+    font-family: var(--font-mono);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+  .hero-title .cursor {
+    display: inline-block;
+    width: 10px; height: 1.2em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 560px;
+    margin-bottom: 3rem;
+    line-height: 1.8;
+  }
+
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.8rem 1.8rem;
+    background: var(--accent);
+    color: #0a0e14;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,229,160,0.3); }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.8rem 1.8rem;
+    border: 1px solid var(--border-accent);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .btn-ghost:hover { background: rgba(0,229,160,0.07); }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── SECTION HEADING ── */
+  .section-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .section-desc {
+    color: var(--muted);
+    max-width: 500px;
+    margin-bottom: 3.5rem;
+    font-size: 1rem;
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .about-text p { color: var(--muted); margin-bottom: 1.2rem; font-size: 1rem; }
+  .about-text strong { color: var(--text); }
+
+  .terminal {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .terminal-bar {
+    padding: 0.75rem 1rem;
+    background: var(--bg-card2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #28ca41; }
+  .terminal-title {
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .terminal-body { padding: 1.5rem; font-family: var(--font-mono); font-size: 13px; line-height: 2; }
+  .term-prompt { color: var(--accent); }
+  .term-cmd { color: var(--text); }
+  .term-output { color: var(--muted); padding-left: 1.2rem; }
+  .term-key { color: var(--accent2); }
+  .term-val { color: #e8a44a; }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .skill-card:hover { border-color: var(--border-accent); transform: translateY(-3px); }
+  .skill-card:hover::before { opacity: 1; }
+  .skill-icon {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .skill-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem; }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    background: rgba(0,229,160,0.08);
+    border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 3px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .tag-blue {
+    background: rgba(0,184,255,0.08);
+    border-color: rgba(0,184,255,0.2);
+    color: var(--accent2);
+  }
+
+  /* ── PROJECTS ── */
+  .projects-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .project-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .project-card:hover { border-color: var(--border-accent); transform: translateX(4px); }
+  .project-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+  .project-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .project-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+  .project-stack { display: flex; gap: 6px; flex-wrap: wrap; }
+  .project-arrow {
+    font-size: 1.5rem;
+    color: var(--muted);
+    transition: color 0.2s, transform 0.2s;
+    align-self: center;
+  }
+  .project-card:hover .project-arrow { color: var(--accent); transform: translate(4px, -4px); }
+
+  /* ── EXPERIENCE ── */
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 3rem;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 6px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(0,229,160,0.5);
+    margin-left: -4px;
+  }
+  .timeline-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .timeline-role {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .timeline-company {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .timeline-desc { color: var(--muted); font-size: 0.9rem; }
+  .timeline-bullets { color: var(--muted); font-size: 0.9rem; padding-left: 1.2rem; }
+  .timeline-bullets li { margin-bottom: 0.3rem; }
+
+  /* ── CONTACT ── */
+  .contact-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    border-radius: 12px;
+    padding: 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-box::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(0,229,160,0.05);
+  }
+  .contact-box .section-title { margin-bottom: 1rem; }
+  .contact-box p { color: var(--muted); max-width: 450px; margin: 0 auto 2.5rem; }
+  .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    position: relative;
+    z-index: 1;
+  }
+  footer span { color: var(--accent); }
+
+  /* ── FADE IN ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .about-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .project-card { grid-template-columns: 1fr; }
+    .hero-stats { gap: 1.5rem; }
+    .contact-box { padding: 2.5rem 1.5rem; }
+    section { padding: 5rem 0; }
+  }
+  @media (max-width: 480px) {
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>~/</span>siyanda_nduze</div>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="wrapper">
+    <div class="hero-inner">
+      <div class="hero-tag">Open to opportunities</div>
+      <h1 class="hero-name">
+        Siyanda<br>
+        <span class="highlight">Nduze</span>
+      </h1>
+      <p class="hero-title">
+        <span id="typed"></span><span class="cursor"></span>
+      </p>
+      <p class="hero-desc">
+        Aspiring software developer with full-stack experience and a passion for building robust backends. Grounded in .NET, C#, Java and Python — with hands-on knowledge of Oracle's data platform and Microsoft Azure cloud services.
+      </p>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn-primary">View Projects →</a>
+        <a href="#contact" class="btn-ghost">Get in Touch</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">4</div>
+          <div class="stat-label">Oracle Certifications</div>
+        </div>
+        <div>
+          <div class="stat-num">3</div>
+          <div class="stat-label">Projects Built</div>
+        </div>
+        <div>
+          <div class="stat-num">BSc</div>
+          <div class="stat-label">Computer Science</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrapper">
+    <div class="fade-in">
+      <p class="section-tag">// 01. about</p>
+      <h2 class="section-title">Who I Am</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text fade-in">
+        <p>
+          I'm a <strong>software developer</strong> based in Pietermaritzburg, KZN, currently pursuing a BSc in Computer and Information Science in Application Development at IIE Varsity College.
+        </p>
+        <p>
+          I have full-stack web development experience with a strong focus on <strong>backend systems</strong> — building APIs, microservices, and authentication layers using ASP.NET Core and C#. I complement this with database management skills across SQL Server, MySQL and MongoDB.
+        </p>
+        <p>
+          I hold certifications from <strong>Oracle</strong> (Data Platform, Cloud Infrastructure AI, Cloud Infrastructure Foundations) and have foundational knowledge of <strong>Microsoft Azure</strong>. I'm passionate about creating efficient, well-structured software that solves real problems.
+        </p>
+      </div>
+      <div class="terminal fade-in">
+        <div class="terminal-bar">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <div class="terminal-title">siyanda@dev ~ bash</div>
+        </div>
+        <div class="terminal-body">
+          <div><span class="term-prompt">❯</span> <span class="term-cmd">cat profile.json</span></div>
+          <div class="term-output">{</div>
+          <div class="term-output">&nbsp;&nbsp;<span class="term-key">"name"</span>: <span class="term-val">"Siyanda Nduze"</span>,</div>
+          <div class="term-output">&nbsp;&nbsp;<span class="term-key">"role"</span>: <span class="term-val">"Software Developer"</span>,</div>
+          <div class="term-output">&nbsp;&nbsp;<span class="term-key">"location"</span>: <span class="term-val">"Pietermaritzburg, KZN"</span>,</div>
+          <div class="term-output">&nbsp;&nbsp;<span class="term-key">"study"</span>: <span class="term-val">"BSc CompSci @ IIE Varsity"</span>,</div>
+          <div class="term-output">&nbsp;&nbsp;<span class="term-key">"focus"</span>: [</div>
+          <div class="term-output">&nbsp;&nbsp;&nbsp;&nbsp;<span class="term-val">"ASP.NET Core"</span>, <span class="term-val">"C#"</span>,</div>
+          <div class="term-output">&nbsp;&nbsp;&nbsp;&nbsp;<span class="term-val">"Microservices"</span>,</div>
+          <div class="term-output">&nbsp;&nbsp;&nbsp;&nbsp;<span class="term-val">"Azure / Oracle Cloud"</span></div>
+          <div class="term-output">&nbsp;&nbsp;],</div>
+          <div class="term-output">&nbsp;&nbsp;<span class="term-key">"available"</span>: <span class="term-val">true</span></div>
+          <div class="term-output">}</div>
+          <div style="margin-top:8px"><span class="term-prompt">❯</span> <span class="cursor" style="animation:blink 1s step-end infinite;display:inline-block;width:8px;height:14px;background:var(--accent);vertical-align:middle;"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrapper">
+    <div class="fade-in">
+      <p class="section-tag">// 02. skills</p>
+      <h2 class="section-title">Tech Stack</h2>
+      <p class="section-desc">The tools and technologies I use to build reliable, scalable backend systems.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card fade-in">
+        <div class="skill-icon">{}</div>
+        <div class="skill-name">Languages</div>
+        <div style="font-size:0.875rem;color:var(--muted);">Core languages across backend and mobile</div>
+        <div class="skill-tags">
+          <span class="tag">C#</span>
+          <span class="tag">Java</span>
+          <span class="tag">Python</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Kotlin</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">&lt;/&gt;</div>
+        <div class="skill-name">Frameworks & Runtimes</div>
+        <div style="font-size:0.875rem;color:var(--muted);">Frameworks used to build full-stack applications</div>
+        <div class="skill-tags">
+          <span class="tag">ASP.NET Core</span>
+          <span class="tag">.NET MVC</span>
+          <span class="tag">React</span>
+          <span class="tag">HTML/CSS</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">DB</div>
+        <div class="skill-name">Databases</div>
+        <div style="font-size:0.875rem;color:var(--muted);">Relational and NoSQL data management</div>
+        <div class="skill-tags">
+          <span class="tag">SQL Server</span>
+          <span class="tag">MySQL</span>
+          <span class="tag">MongoDB</span>
+          <span class="tag">SSMS</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">☁</div>
+        <div class="skill-name">Cloud & DevOps</div>
+        <div style="font-size:0.875rem;color:var(--muted);">Cloud platforms and containerisation tools</div>
+        <div class="skill-tags">
+          <span class="tag tag-blue">Microsoft Azure</span>
+          <span class="tag tag-blue">Oracle Cloud</span>
+          <span class="tag tag-blue">Docker</span>
+          <span class="tag tag-blue">GitHub</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">~$</div>
+        <div class="skill-name">APIs & Testing</div>
+        <div style="font-size:0.875rem;color:var(--muted);">Building and testing RESTful API services</div>
+        <div class="skill-tags">
+          <span class="tag">REST APIs</span>
+          <span class="tag">JWT Auth</span>
+          <span class="tag">Postman</span>
+          <span class="tag">Role-Based Access</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">★</div>
+        <div class="skill-name">Certifications</div>
+        <div style="font-size:0.875rem;color:var(--muted);">Recognised industry credentials</div>
+        <div class="skill-tags">
+          <span class="tag tag-blue">Oracle Data Platform</span>
+          <span class="tag tag-blue">OCI AI Foundations</span>
+          <span class="tag tag-blue">OCI Foundations</span>
+          <span class="tag">FNB Full Stack</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="wrapper">
+    <div class="fade-in">
+      <p class="section-tag">// 03. projects</p>
+      <h2 class="section-title">Selected Work</h2>
+      <p class="section-desc">Real systems built using .NET, C# and microservice patterns.</p>
+    </div>
+    <div class="projects-list">
+
+      <a href="https://github.com/SiyandaNduze" target="_blank" class="project-card fade-in">
+        <div>
+          <div class="project-num">Project / 01 · Dec 2025</div>
+          <div class="project-name">Tutor Hire System</div>
+          <div class="project-desc">A full-stack web application connecting students and tutors with role-based authentication for Admin, Tutor and Student roles. Features posting, accepting and managing tutoring jobs with real-time status tracking throughout the hiring lifecycle.</div>
+          <div class="project-stack">
+            <span class="tag">ASP.NET Core MVC</span>
+            <span class="tag">C#</span>
+            <span class="tag">SQL Server</span>
+            <span class="tag">Role-Based Auth</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </a>
+
+      <a href="https://github.com/SiyandaNduze" target="_blank" class="project-card fade-in">
+        <div>
+          <div class="project-num">Project / 02 · Jan 2026</div>
+          <div class="project-name">Auth Service Microservice</div>
+          <div class="project-desc">A dedicated JWT-based authentication API built as a standalone microservice. Implements user registration and login with secure password handling, RESTful endpoints for token generation, token expiration management, and account lockout protection.</div>
+          <div class="project-stack">
+            <span class="tag">ASP.NET Core</span>
+            <span class="tag">C#</span>
+            <span class="tag">JWT</span>
+            <span class="tag">REST API</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </a>
+
+      <a href="https://github.com/SiyandaNduze" target="_blank" class="project-card fade-in">
+        <div>
+          <div class="project-num">Project / 03 · Jan 2026</div>
+          <div class="project-name">Notification Microservice</div>
+          <div class="project-desc">A stateless microservice delivering multi-channel notifications — email, SMS and push — through a unified interface. Features an async processing pipeline with a background memory queue, RESTful API endpoints, input validation and structured error handling.</div>
+          <div class="project-stack">
+            <span class="tag">ASP.NET Core</span>
+            <span class="tag">C#</span>
+            <span class="tag">Async Pipelines</span>
+            <span class="tag">REST API</span>
+            <span class="tag">Microservices</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </a>
+
+      <a href="https://github.com/SiyandaNduze" target="_blank" class="project-card fade-in">
+        <div>
+          <div class="project-num">Volunteer Work · Mar 2025</div>
+          <div class="project-name">School Website — Ashburton</div>
+          <div class="project-desc">Collaborated in building a website for a rural school in Ashburton, KZN. Conducted on-site interviews with learners and the principal to gather requirements, and helped source and organise the visual and written content used throughout the site.</div>
+          <div class="project-stack">
+            <span class="tag">Web Development</span>
+            <span class="tag">Requirements Gathering</span>
+            <span class="tag">Community Impact</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrapper">
+    <div class="fade-in">
+      <p class="section-tag">// 04. experience</p>
+      <h2 class="section-title">Experience & Education</h2>
+      <p class="section-desc">Work experience, consulting, and academic background.</p>
+    </div>
+    <div class="timeline fade-in">
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 2026</div>
+        <div class="timeline-role">Entrepreneur Consultant</div>
+        <div class="timeline-company">Independent · KwaZulu-Natal</div>
+        <ul class="timeline-bullets">
+          <li>Provided consultation on website creation and the tools available for small business owners</li>
+          <li>Compiled a curated list of affordable, recommended technologies, platforms and payment gateways for integration into a client website</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">Mar 2025</div>
+        <div class="timeline-role">Website Development Volunteer</div>
+        <div class="timeline-company">Rural School Project · Ashburton, KZN</div>
+        <ul class="timeline-bullets">
+          <li>Collaborated with a team to design and build a website for an under-resourced rural school</li>
+          <li>Conducted on-site interviews with learners and the school principal to gather requirements and collect content resources</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2024 — Present</div>
+        <div class="timeline-role">BSc Computer and Information Science</div>
+        <div class="timeline-company">IIE Varsity College · Application Development</div>
+        <ul class="timeline-bullets">
+          <li>Studying application development with focus on backend systems, databases, and cloud computing</li>
+          <li>Completed projects in ASP.NET Core, C#, SQL Server and microservice architecture</li>
+          <li>Earned four Oracle and FNB App Academy certifications alongside academic studies</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrapper">
+    <div class="contact-box fade-in">
+      <p class="section-tag" style="text-align:center;">// 05. contact</p>
+      <h2 class="section-title">Let's Build Something</h2>
+      <p>I'm open to graduate roles, internships, freelance projects and interesting collaborations. If you have a problem to solve or an opportunity to share, let's talk.</p>
+      <div class="contact-links">
+        <a href="mailto:nduzesiyanda@gmail.com" class="contact-link">✉ nduzesiyanda@gmail.com</a>
+        <a href="tel:+27662102445" class="contact-link">☎ +27 66 210 2445</a>
+        <a href="https://github.com/SiyandaNduze" target="_blank" class="contact-link">⌥ GitHub</a>
+        <a href="https://linkedin.com/in/siyanda-nduze-154017361" target="_blank" class="contact-link">⊹ LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrapper">
+    Designed & built by <span>Siyanda Nduze</span> · 2026 · Pietermaritzburg, KZN
+  </div>
+</footer>
+
+<script>
+// Typed effect
+const phrases = [
+  'Software Developer',
+  'Full-Stack Developer',
+  'Backend Engineer',
+  '.NET & C# Developer'
+];
+let pi = 0, ci = 0, deleting = false;
+const el = document.getElementById('typed');
+function type() {
+  const phrase = phrases[pi];
+  if (!deleting) {
+    el.textContent = phrase.slice(0, ++ci);
+    if (ci === phrase.length) { deleting = true; setTimeout(type, 1800); return; }
+  } else {
+    el.textContent = phrase.slice(0, --ci);
+    if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; }
+  }
+  setTimeout(type, deleting ? 50 : 90);
+}
+type();
+
+// Scroll reveal
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
